@@ -30,5 +30,9 @@ namespace WeiWay.Models
             return new ApplicationDbContext();
         }
         public DbSet<Message> Messages { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
