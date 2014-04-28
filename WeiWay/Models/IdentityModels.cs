@@ -34,6 +34,7 @@ namespace WeiWay.Models
                 base.SecurityStamp = value;
             }
         }
+        public string Icon { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
