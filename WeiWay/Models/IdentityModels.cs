@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace WeiWay.Models
 {
@@ -28,5 +29,6 @@ namespace WeiWay.Models
         {
             return new ApplicationDbContext();
         }
+        public DbSet<Message> Messages { get; set; }
     }
 }
