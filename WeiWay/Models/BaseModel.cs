@@ -5,7 +5,7 @@ using System.Web;
 
 namespace WeiWay.Models
 {
-    public class BaseModel
+    public abstract class BaseModel
     {
         public string Id { get; set; }
         public DateTime CreateTime { get; set; }
