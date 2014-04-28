@@ -405,7 +405,7 @@ namespace WeiWay.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Icon = "http://furyu.nazo.cc/twicon/" + info.DefaultUserName + "/bigger"};
                 IdentityResult result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
