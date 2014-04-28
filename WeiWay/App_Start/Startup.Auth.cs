@@ -41,9 +41,9 @@ namespace WeiWay
             //    clientId: "",
             //    clientSecret: "");
 
-            //app.UseTwitterAuthentication(
-            //   consumerKey: "",
-            //   consumerSecret: "");
+            app.UseTwitterAuthentication(
+               consumerKey: "hBetfrIg5ZRDFzTJLLfh283bK",
+               consumerSecret: "gvJuzBKdxIn1bqbyY8AkQqhmovLwFh6aRlYRoeqXrAJ2UA2zoB");
 
             //app.UseFacebookAuthentication(
             //   appId: "",
