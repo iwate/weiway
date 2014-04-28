@@ -4,6 +4,7 @@ namespace WeiWay.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using WeiWay.Models;
 
     internal sealed class Configuration : DbMigrationsConfiguration<WeiWay.Models.ApplicationDbContext>
     {
@@ -26,6 +27,10 @@ namespace WeiWay.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+            context.Messages.AddOrUpdate(x => x.Text,
+                new Message { Text = "うぇーい！" },
+                new Message { Text = "うぇーい！(=ﾟωﾟ)ﾉ"}
+                );
         }
     }
 }
