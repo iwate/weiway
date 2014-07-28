@@ -1,0 +1,58 @@
+﻿@model WeiWay.Models.StoreViewModel
+@{
+    ViewBag.Title = "Mine";
+}
+@section Styles{
+    <style type="text/css">
+        body {
+            background: #EEE;
+        }
+    </style>
+}
+<div id="message-template" class="template">
+    <li class="message">
+        @*<div class="pull-right"><button class="btn btn-success">Buy $0</button></div>*@
+        <h4 class="wei" data-skl-bind="innerText: Text"></h4>
+        @*<p class="description"></p>*@
+    </li>
+</div>
+<div class="row">
+    <div class="col-md-3 col-md-offset-2">
+        <div class="row">
+            <div class="col-md-12 info">
+                <img src="@Model.UserIcon" alt="icon" />
+                <h2>@Model.UserName</h2>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="list-group">
+                <li class="list-group-item"><a href="@Url.Action("Store", "Wei")">Store <span class="pull-right  glyphicon glyphicon-chevron-right"></span></a></li>
+                <li class="list-group-item active">My Wei <span class="pull-right glyphicon glyphicon-chevron-right"></span></a></li>
+                <li class="list-group-item"><a href="@Url.Action("Create", "Wei")">Create(準備中) <span class="pull-right glyphicon glyphicon-chevron-right"></span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="row">
+            <ul class="col-md-12" id="messages">
+                @foreach (var message in Model.Messages)
+                {
+                    <li class="message">
+                        @*<div class="pull-right"><button class="btn btn-success">Buy $0</button></div>*@
+                        <h4 class="wei">@message.Text</h4>
+                        @*<p class="description"></p>*@
+                    </li>
+                }
+                @*<li id="more">もっと見る</li>*@
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/Scripts/plupload.full.min.js")
+    @Scripts.Render("~/Scripts/jquery.signalR-2.0.3.js")
+    @Scripts.Render("~/signalr/hubs")
+    @Scripts.Render("~/Scripts/skeleton.js")
+    @*@Scripts.Render("~/Scripts/mine.js")*@
+}

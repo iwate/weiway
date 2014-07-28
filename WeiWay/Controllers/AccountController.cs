@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Owin;
 using WeiWay.Models;
+using TweetSharp;
+using System.Data.Entity;
 
 namespace WeiWay.Controllers
 {
@@ -18,6 +20,7 @@ namespace WeiWay.Controllers
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -26,6 +29,7 @@ namespace WeiWay.Controllers
         public AccountController(ApplicationUserManager userManager)
         {
             UserManager = userManager;
+            UserManager.UserValidator = new UserValidator<ApplicationUser>(UserManager) { AllowOnlyAlphanumericUserNames = false };
         }
 
         public ApplicationUserManager UserManager {
@@ -352,9 +356,72 @@ namespace WeiWay.Controllers
             else
             {
                 // ユーザーがアカウントを持っていない場合、ユーザーにアカウントを作成するよう求めます
-                ViewBag.ReturnUrl = returnUrl;
-                ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+                //ViewBag.ReturnUrl = returnUrl;
+                //ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
+                //return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
+
+                var claimsIdentity = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                var model = new ExternalLoginConfirmationViewModel();
+                var accessToken = claimsIdentity.FindAll("urn:twitter:access_token").First().Value;
+                var accessTokenSecret = claimsIdentity.FindAll("urn:twitter:access_token_secret").First().Value;
+                if (accessToken == null || accessTokenSecret == null)
+                {
+                    return HttpNotFound("Not found Twitter Access Token");
+                }
+                else
+                {
+                    TwitterService service = new TwitterService("hBetfrIg5ZRDFzTJLLfh283bK", "gvJuzBKdxIn1bqbyY8AkQqhmovLwFh6aRlYRoeqXrAJ2UA2zoB");
+                    service.AuthenticateWith(accessToken, accessTokenSecret);
+                    TwitterUser twitterUser = service.VerifyCredentials(new VerifyCredentialsOptions());
+                    if (twitterUser == null) {
+                        return HttpNotFound("Not Found Twitter User");
+                    }
+                    else
+                    {
+                        user = new ApplicationUser 
+                        { 
+                            UserName = loginInfo.DefaultUserName,
+                            Email = loginInfo.DefaultUserName + "@weiway.com",
+                            Icon = twitterUser.ProfileImageUrl
+                        };
+                        IdentityResult result = await UserManager.CreateAsync(user);
+                        if (result.Succeeded)
+                        {
+                            result = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                            if (result.Succeeded)
+                            {
+                                var messages = db.Messages.OrderBy(x => x.CreateTime).Take(8).ToList();
+                                var _user = db.Users.Find(user.Id);
+                                messages.ForEach(delegate(Message message)
+                                {
+                                    message.Users.Add(_user);
+                                    _user.Messages.Add(message);
+                                    db.Entry(message).State = EntityState.Modified;
+                                    db.Entry(_user).State = EntityState.Modified;
+                                });
+                                try
+                                {
+                                    await db.SaveChangesAsync();
+                                }
+                                catch
+                                {
+                                    throw;
+                                }
+
+                                await SignInAsync(user, isPersistent: false);
+
+                                // アカウント確認とパスワード リセットを有効にする方法の詳細については、http://go.microsoft.com/fwlink/?LinkID=320771 を参照してください
+                                // このリンクを含む電子メールを送信します
+                                // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                                // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                                // SendEmail(user.Email, callbackUrl, "アカウントの確認", "このリンクをクリックすることによってアカウントを確認してください");
+
+                                return RedirectToLocal(returnUrl);
+                            }
+                        }
+                        return HttpNotFound("");
+                    }
+                }
             }
         }
 
@@ -405,7 +472,7 @@ namespace WeiWay.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser() { UserName = model.Email, Email = model.Email, Icon = "http://furyu.nazo.cc/twicon/" + info.DefaultUserName + "/bigger"};
+                var user = new ApplicationUser() { UserName = info.DefaultUserName, Email = model.Email, Icon = "http://furyu.nazo.cc/twicon/" + info.DefaultUserName + "/bigger"};
                 IdentityResult result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -462,6 +529,7 @@ namespace WeiWay.Controllers
             {
                 UserManager.Dispose();
                 UserManager = null;
+                db.Dispose();
             }
             base.Dispose(disposing);
         }

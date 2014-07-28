@@ -1,0 +1,97 @@
+﻿@model WeiWay.Models.DashboardViewModel
+@{
+    ViewBag.Title = "Dashboard";
+}
+@section Styles{
+    <style type="text/css">
+        body {
+            background: #EEE;
+        }
+    </style>
+}
+
+<div id="wei-template" class="template">
+    <li class="wei" data-skl-bind="id: domid">
+        <div class="padding">
+            <img class="usericon" data-skl-bind="src: userIcon" />@@<span class="username" data-skl-bind="innerText: userName"></span>
+            <small class="pull-right"><span class="pub-date" data-skl-bind="innerText: displayPostDate"></span> </small>
+        </div>
+        <img src="" alt="" data-skl-bind="src: imageUrl" />
+        <div class="padding">
+            <h4 class="wei-text" data-skl-bind="innerText: text">(☝ ՞ਊ ՞)☝ｳｪｰｲwwwwwﾌｩ!wwwww</h4>
+            <button class="btn btn-warning onechan">☝ ワンチャン！</button>
+            <small><span data-skl-bind="innerText: onechances"></span>人がワンチャンしました</small>
+            <hr />
+            <ul class="comments"></ul>
+            <div class="more">
+                <span>さらに読み込む</span>
+            </div>
+            <div class="input-group">
+                @Html.DropDownList("weiwei", Model.WeiWei, new { @class = "form-control message-list" })
+                <span class="input-group-btn">
+                    <button class="btn btn-default reply" type="button">うぇい</button>
+                </span>
+            </div>
+        </div>
+    </li>
+</div>
+<div id="comment-template" class="template">
+    <li class="comment">
+        <img class="usericon" data-skl-bind="src: userIcon" />@@<span class="username" data-skl-bind="innerText: userName"></span>
+        <span data-skl-bind="innerText: text"></span>
+    </li>
+</div>
+<div class="row">
+    <div class="col-md-3 col-md-offset-2">
+        <div class="row">
+            <div class="col-md-12 info hidden-xs hidden-sm">
+                <img src="@Model.UserIcon" alt="icon" />
+                <h2>@Model.UserName</h2>
+            </div>
+            <div class="col-md-12 message-form">
+                <form>
+                    <input type="hidden" value="" id="image-url" />
+                    <img src="" alt="" id="upload-image" />
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="button" id="image-uploader"><span class="glyphicon glyphicon-camera"></span></button>
+                            </span>
+                            @Html.DropDownList("weiwei", Model.WeiWei, new { @class = "form-control", id = "message-list" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="form-control" type="button" id="post-wei">Wei!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row hidden-xs hidden-sm" >
+            <div class="col-md-12" style="padding: 30px; text-align:center;background:white; margin-top:10px;">
+                ほしい機能・要望・バグを発見された方は<a href="https://twitter.com/share?hashtags=weiway">#weiway</a>でつぶやいてくださるとある程度対応します。<br /> 
+                よろしくお願いいたします。m(_ _)m
+            </div>
+        </div>
+        <div class="row hidden-xs hidden-sm">
+            <div class="col-md-12" style="margin-top:10px; background:white;padding:0;">
+                <a class="twitter-timeline" href="https://twitter.com/search?q=%23weiway" data-widget-id="461757981718085633">#weiway に関するツイート</a>
+                <script>!function (d, s, id) { var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https'; if (!d.getElementById(id)) { js = d.createElement(s); js.id = id; js.src = p + "://platform.twitter.com/widgets.js"; fjs.parentNode.insertBefore(js, fjs); } }(document, "script", "twitter-wjs");</script>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="row">
+            <ul class="col-md-12" id="timeline">
+                <li id="more">さらに読み込む</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/Scripts/plupload.full.min.js")
+    @Scripts.Render("~/Scripts/jquery.signalR-2.0.3.js")
+    @Scripts.Render("~/signalr/hubs")
+    @Scripts.Render("~/Scripts/skeleton.js")
+    @Scripts.Render("~/Scripts/dashboard.js")
+}

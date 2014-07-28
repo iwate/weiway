@@ -1,5 +1,7 @@
-namespace WeiWay.Migrations
+﻿namespace WeiWay.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -28,9 +30,42 @@ namespace WeiWay.Migrations
             //    );
             //
             context.Messages.AddOrUpdate(x => x.Text,
-                new Message { Text = "�����[���I" },
-                new Message { Text = "�����[���I(=߃��)�"}
+                new Message { Text = "うぇーい↑↑" , Index = 0},
+                new Message { Text = "うぇい?", Index = 1 },
+                new Message { Text = "うぇいうぇい(｀・ω・´)", Index = 2 },
+                new Message { Text = "うぇーい←", Index = 3 },
+                new Message { Text = "(☝ ՞ਊ ՞)☝ｳｪｰｲwwwwwﾌｩ!", Index = 3 },
+                new Message { Text = "(ｄ･ิω･ิｄ)ｵｩｲｪｰ♪", Index = 4},
+                new Message { Text = "ｳｪｰｲｗｗｗｗﾜﾝﾁｬﾝｗｗｗｗｗ", Index = 5},
+                new Message { Text = "ｯｼｬ‼︎ﾜﾝﾁｬﾝｱﾙﾃﾞ‼︎", Index = 6 },
+                new Message{ Text = "ヽ(゜∀゜)ノうぇーい", Index = 7}
                 );
+            var users = context.Users.ToList();
+            var messages = context.Messages.OrderBy(x => x.CreateTime).Take(8).ToList();
+            messages.ForEach(delegate(Message message)
+            {
+                users.ForEach(delegate(ApplicationUser user)
+                {
+                    if (!user.Messages.Contains(message))
+                    {
+                        message.Users.Add(user);
+                        user.Messages.Add(message);
+                        context.Entry(message).State = EntityState.Modified;
+                        context.Entry(user).State = EntityState.Modified;
+                    }
+                });
+            });
+           context.SaveChanges();
+
+           if (!context.Roles.Any(r => r.Name == "Admin"))
+           {
+               var store = new RoleStore<IdentityRole>(context);
+               var manager = new RoleManager<IdentityRole>(store);
+               var role = new IdentityRole { Name = "Admin" };
+
+               manager.Create(role);
+           }
         }
     }
+
 }

@@ -40,10 +40,21 @@ namespace WeiWay
             //app.UseMicrosoftAccountAuthentication(
             //    clientId: "",
             //    clientSecret: "");
-
-            app.UseTwitterAuthentication(
-               consumerKey: "hBetfrIg5ZRDFzTJLLfh283bK",
-               consumerSecret: "gvJuzBKdxIn1bqbyY8AkQqhmovLwFh6aRlYRoeqXrAJ2UA2zoB");
+            var twitterOptions = new Microsoft.Owin.Security.Twitter.TwitterAuthenticationOptions
+            {
+                ConsumerKey = "hBetfrIg5ZRDFzTJLLfh283bK",
+                ConsumerSecret = "gvJuzBKdxIn1bqbyY8AkQqhmovLwFh6aRlYRoeqXrAJ2UA2zoB",
+                Provider = new Microsoft.Owin.Security.Twitter.TwitterAuthenticationProvider
+                {
+                    OnAuthenticated = (context) =>
+                    {
+                        context.Identity.AddClaim(new System.Security.Claims.Claim("urn:twitter:access_token", context.AccessToken, XmlSchemaString, "Twitter"));
+                        context.Identity.AddClaim(new System.Security.Claims.Claim("urn:twitter:access_token_secret", context.AccessTokenSecret, XmlSchemaString, "Twitter"));
+                        return System.Threading.Tasks.Task.FromResult(0);
+                    }
+                }
+            };
+            app.UseTwitterAuthentication(twitterOptions);
 
             //app.UseFacebookAuthentication(
             //   appId: "",
@@ -51,5 +62,6 @@ namespace WeiWay
 
             //app.UseGoogleAuthentication();
         }
+        const string XmlSchemaString = "http://www.w3.org/2001/XMLSchema#string";
     }
 }

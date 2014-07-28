@@ -1,13 +1,20 @@
 ﻿<!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja" dir="ltr" xmlns:og="http://ogp.me/ns#" xmlns:mixi="http://mixi-platform.com/ns#" xmlns:fb="http://www.facebook.com/2008/fbml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - マイ ASP.NET アプリケーション</title>
+    <meta property="og:title" content="さあ、はじめよう。" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://weiway.azurewebsites.net" />
+    <meta property="og:image" content="http://weiway.azurewebsites.net/Images/weiwaytop.jpg" />
+    <meta property="og:site_name" content="Wei Way | Wei with you" />
+    <meta property="og:description" content="「うぇーい」と「ワンチャン」のみでかわすことでうまれる究極の無礼講飲みにケーション。そこには、人種、性別、年齢の垣根などない。そう、まさに、究極のコミュニケーション。" /> 
+    <title>@ViewBag.Title - WeiWay</title>
     @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/style.css")
+    @RenderSection("styles", false)
     @Scripts.Render("~/bundles/modernizr")
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -18,23 +25,27 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("アプリケーション名", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Wei Way", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("ホーム", "Index", "Home")</li>
-                    <li>@Html.ActionLink("詳細", "About", "Home")</li>
-                    <li>@Html.ActionLink("連絡先", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Store(Free)", "Store", "Wei")</li>
+                    <li>@Html.ActionLink("Policy", "Policy", "Home")</li>
+                    @*<li>@Html.ActionLink("詳細", "About", "Home")</li>
+                        <li>@Html.ActionLink("連絡先", "Contact", "Home")</li>*@
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
     </div>
-    <div class="container body-content">
+    @{
+        var containerStyle = ViewBag.IsFluid != null ? "container-fluid" : "container";
+    }
+    <div class="@containerStyle body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - マイ ASP.NET アプリケーション</p>
+            <p>&copy; @DateTime.Now.Year - Wei Way</p>
         </footer>
     </div>
 
@@ -43,3 +54,4 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+

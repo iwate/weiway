@@ -15,8 +15,13 @@
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
+    @*<ul class="nav navbar-nav navbar-right">
         <li>@Html.ActionLink("登録", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
         <li>@Html.ActionLink("ログイン", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
-    </ul>
+    </ul>*@
+    using (Html.BeginForm("ExternalLogin", "Account", FormMethod.Post, new { @class="nav navbar-nav navbar-right"}))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-info" id="Twitter" name="provider" value="Twitter" title="Log in using your twitter account">Login with Twitter</button>
+    }
 }
